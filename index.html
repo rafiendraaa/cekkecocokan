@@ -1,31 +1,36 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Cek Kecocokan Pasangan</title>
-</head>
-<body>
-    <header>
-        <h1>Cek Kecocokan Pasangan</h1>
-        <p>Temukan seberapa cocok Anda dengan pasangan!</p>
-    </header>
-    <main>
-        <form id="compatibility-form">
-            <label for="name1">Nama Anda:</label>
-            <input type="text" id="name1" required>
+document.getElementById('compatibility-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-            <label for="name2">Nama Pasangan:</label>
-            <input type="text" id="name2" required>
+    const name1 = document.getElementById('name1').value;
+    const name2 = document.getElementById('name2').value;
 
-            <button type="submit">Cek Kecocokan</button>
-        </form>
-        <div id="result"></div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Cek Kecocokan Pasangan</p>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+    // Hitung skor kecocokan berdasarkan panjang nama dan jumlah huruf yang sama
+    const score = calculateCompatibility(name1, name2);
+    
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `<h2>Kecocokan: ${score}%</h2>`;
+});
+
+// Fungsi untuk menghitung kecocokan
+function calculateCompatibility(name1, name2) {
+    const combinedLength = name1.length + name2.length;
+    
+    // Menghitung jumlah huruf yang sama
+    let commonLetters = 0;
+    const name1Letters = new Set(name1.toLowerCase().split(''));
+    const name2Letters = new Set(name2.toLowerCase().split(''));
+
+    name1Letters.forEach(letter => {
+        if (name2Letters.has(letter)) {
+            commonLetters++;
+        }
+    });
+
+    // Hitung persentase kecocokan
+    const compatibilityScore = Math.floor((commonLetters / Math.max(name1.length, name2.length)) * 100);
+    
+    // Tambah faktor dari panjang nama
+    const lengthFactor = Math.floor((Math.min(name1.length, name2.length) / Math.max(name1.length, name2.length)) * 10);
+    
+    return Math.min(100, compatibilityScore + lengthFactor);
+}
